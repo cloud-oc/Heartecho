@@ -2,10 +2,10 @@ cask "heartecho" do
   version "0.1.0"
   sha256 :no_check
 
-  url "https://github.com/cloud-oc/goal-loopback-https-rogueamoeba-com-loopback/releases/download/v#{version}/Heartecho-#{version}.dmg"
+  url "https://github.com/cloud-oc/Heartecho/releases/download/v#{version}/Heartecho-#{version}.dmg"
   name "Heartecho"
   desc "Native macOS audio routing workbench"
-  homepage "https://github.com/cloud-oc/goal-loopback-https-rogueamoeba-com-loopback"
+  homepage "https://github.com/cloud-oc/Heartecho"
 
   pkg "Install Heartecho.pkg", allow_untrusted: true
 

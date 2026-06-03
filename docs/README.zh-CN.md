@@ -25,7 +25,7 @@ Heartecho 是一个原生 macOS 音频路由工作台，用来创建虚拟音频
 
 ## 下载
 
-普通用户请从 [GitHub Releases](https://github.com/cloud-oc/goal-loopback-https-rogueamoeba-com-loopback/releases/latest) 下载最新的 `Heartecho-<version>.dmg`。
+普通用户请从 [GitHub Releases](https://github.com/cloud-oc/Heartecho/releases/latest) 下载最新的 `Heartecho-<version>.dmg`。
 
 打开 DMG 后运行 `Install Heartecho.pkg`。这个安装包会安装应用以及必需的系统音频组件。Release 中也会保留原始 `.pkg` 文件和 `release-manifest.json`，用于调试、自动化和校验产物；面向用户推荐下载 DMG。
 
@@ -52,7 +52,7 @@ sudo xattr -r -d com.apple.quarantine "/Library/Audio/Plug-Ins/HAL/Heartecho.dri
 通过本仓库的第三方 cask 安装：
 
 ```sh
-brew tap cloud-oc/goal-loopback-https-rogueamoeba-com-loopback https://github.com/cloud-oc/goal-loopback-https-rogueamoeba-com-loopback
+brew tap cloud-oc/Heartecho https://github.com/cloud-oc/Heartecho
 brew install --cask --no-quarantine heartecho
 ```
 

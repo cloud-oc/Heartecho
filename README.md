@@ -25,7 +25,7 @@ Deeper implementation notes live in [docs/architecture.md](docs/architecture.md)
 
 ## Download
 
-Most users should download the latest `Heartecho-<version>.dmg` from [GitHub Releases](https://github.com/cloud-oc/goal-loopback-https-rogueamoeba-com-loopback/releases/latest).
+Most users should download the latest `Heartecho-<version>.dmg` from [GitHub Releases](https://github.com/cloud-oc/Heartecho/releases/latest).
 
 Open the DMG, then run `Install Heartecho.pkg`. The package installs the app plus the required system audio components. The Release also includes raw `.pkg` files and `release-manifest.json` for debugging, automation, and artifact verification; the DMG is the recommended user-facing download.
 
@@ -52,7 +52,7 @@ Only use this for releases downloaded from this repository. This is a community 
 Install from this repository's third-party cask:
 
 ```sh
-brew tap cloud-oc/goal-loopback-https-rogueamoeba-com-loopback https://github.com/cloud-oc/goal-loopback-https-rogueamoeba-com-loopback
+brew tap cloud-oc/Heartecho https://github.com/cloud-oc/Heartecho
 brew install --cask --no-quarantine heartecho
 ```
 
