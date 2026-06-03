@@ -1,70 +1,64 @@
 {
-    "configurations": [
-        {
-            "type": "swift",
-            "request": "launch",
-            "args": [],
-            "cwd": "${workspaceFolder:goal-loopback-https-rogueamoeba-com-loopback}",
-            "name": "Debug Heartecho",
-            "target": "Heartecho",
-            "configuration": "debug",
-            "preLaunchTask": "Swift: Build"
-        },
-        {
-            "type": "swift",
-            "request": "launch",
-            "args": [],
-            "cwd": "${workspaceFolder:goal-loopback-https-rogueamoeba-com-loopback}",
-            "name": "Release Heartecho",
-            "target": "Heartecho",
-            "configuration": "release",
-            "preLaunchTask": "Swift: Build"
-        },
-        {
-            "type": "swift",
-            "request": "launch",
-            "args": [],
-            "cwd": "${workspaceFolder:goal-loopback-https-rogueamoeba-com-loopback}",
-            "name": "Debug HeartechoDiagnostics",
-            "target": "HeartechoDiagnostics",
-            "configuration": "debug",
-            "preLaunchTask": "Swift: Build"
-        },
-        {
-            "type": "swift",
-            "request": "launch",
-            "args": [],
-            "cwd": "${workspaceFolder:goal-loopback-https-rogueamoeba-com-loopback}",
-            "name": "Release HeartechoDiagnostics",
-            "target": "HeartechoDiagnostics",
-            "configuration": "release",
-            "preLaunchTask": "Swift: Build"
-        },
-        {
-            "type": "swift",
-            "request": "launch",
-            "args": [
-                "--init-starter-graph",
-                "--publish-audio"
-            ],
-            "cwd": "${workspaceFolder:goal-loopback-https-rogueamoeba-com-loopback}",
-            "name": "Debug HeartechoHelper",
-            "target": "HeartechoHelper",
-            "configuration": "debug",
-            "preLaunchTask": "Swift: Build"
-        },
-        {
-            "type": "swift",
-            "request": "launch",
-            "args": [
-                "--init-starter-graph",
-                "--publish-audio"
-            ],
-            "cwd": "${workspaceFolder:goal-loopback-https-rogueamoeba-com-loopback}",
-            "name": "Release HeartechoHelper",
-            "target": "HeartechoHelper",
-            "configuration": "release",
-            "preLaunchTask": "Swift: Build"
-        }
-    ]
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:Heartecho}",
+      "name": "Debug Heartecho",
+      "target": "Heartecho",
+      "configuration": "debug",
+      "preLaunchTask": "swift: Build Debug Heartecho"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:Heartecho}",
+      "name": "Release Heartecho",
+      "target": "Heartecho",
+      "configuration": "release",
+      "preLaunchTask": "swift: Build Release Heartecho"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:Heartecho}",
+      "name": "Debug HeartechoDiagnostics",
+      "target": "HeartechoDiagnostics",
+      "configuration": "debug",
+      "preLaunchTask": "swift: Build Debug HeartechoDiagnostics"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:Heartecho}",
+      "name": "Release HeartechoDiagnostics",
+      "target": "HeartechoDiagnostics",
+      "configuration": "release",
+      "preLaunchTask": "swift: Build Release HeartechoDiagnostics"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": ["--init-starter-graph", "--publish-audio"],
+      "cwd": "${workspaceFolder:Heartecho}",
+      "name": "Debug HeartechoHelper",
+      "target": "HeartechoHelper",
+      "configuration": "debug",
+      "preLaunchTask": "swift: Build Debug HeartechoHelper"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": ["--init-starter-graph", "--publish-audio"],
+      "cwd": "${workspaceFolder:Heartecho}",
+      "name": "Release HeartechoHelper",
+      "target": "HeartechoHelper",
+      "configuration": "release",
+      "preLaunchTask": "swift: Build Release HeartechoHelper"
+    }
+  ]
 }

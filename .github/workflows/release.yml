@@ -28,12 +28,16 @@ jobs:
           echo "value=$version" >> "$GITHUB_OUTPUT"
 
       - name: Install icon build dependency
-        run: python3 -m pip install Pillow
+        run: |
+          python3 -m venv .venv
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install Pillow
 
       - name: Build release artifacts
         env:
           VERSION: ${{ steps.version.outputs.value }}
           BUILD_NUMBER: ${{ github.run_number }}
+          PYTHON: ${{ github.workspace }}/.venv/bin/python
         run: scripts/build-release-artifacts.sh --configuration release
 
       - name: Create or update GitHub Release
