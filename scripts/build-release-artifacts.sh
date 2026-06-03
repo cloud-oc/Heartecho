@@ -55,6 +55,7 @@ esac
 INSTALLER_PKG="$OUTPUT_DIR/Heartecho-$VERSION_VALUE.pkg"
 UNINSTALLER_PKG="$OUTPUT_DIR/Heartecho-Uninstaller-$VERSION_VALUE.pkg"
 PRODUCT_PKG="$OUTPUT_DIR/Heartecho-Distribution-$VERSION_VALUE.pkg"
+DMG_PATH="$OUTPUT_DIR/Heartecho-$VERSION_VALUE.dmg"
 MANIFEST_PATH="$ROOT_DIR/build/release-manifest.json"
 
 mkdir -p "$OUTPUT_DIR" "$CLANG_MODULE_CACHE_PATH"
@@ -98,6 +99,12 @@ env CLANG_MODULE_CACHE_PATH="$CLANG_MODULE_CACHE_PATH" swift build -c "$CONFIGUR
     --output "$PRODUCT_PKG"
 "$ROOT_DIR/scripts/verify-distribution-product.sh" "$PRODUCT_PKG"
 
+"$ROOT_DIR/scripts/build-release-dmg.sh" \
+    --version "$VERSION_VALUE" \
+    --package "$PRODUCT_PKG" \
+    --output "$DMG_PATH"
+"$ROOT_DIR/scripts/verify-release-dmg.sh" "$DMG_PATH"
+
 "$ROOT_DIR/scripts/write-release-manifest.sh" \
     --configuration "$CONFIGURATION" \
     --version "$VERSION_VALUE" \
@@ -107,4 +114,5 @@ printf 'Release artifacts ready\n'
 printf '%s\n' "- installer: $INSTALLER_PKG"
 printf '%s\n' "- uninstaller: $UNINSTALLER_PKG"
 printf '%s\n' "- product: $PRODUCT_PKG"
+printf '%s\n' "- dmg: $DMG_PATH"
 printf '%s\n' "- manifest: $MANIFEST_PATH"

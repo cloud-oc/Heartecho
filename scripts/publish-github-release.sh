@@ -66,7 +66,8 @@ if [ -z "$NOTES" ]; then
     NOTES="Automated Heartecho package build for $TAG."
 fi
 if [ -z "$ASSETS" ]; then
-    ASSETS="$ROOT_DIR/build/pkg/Heartecho-Distribution-$VERSION_VALUE.pkg
+    ASSETS="$ROOT_DIR/build/pkg/Heartecho-$VERSION_VALUE.dmg
+$ROOT_DIR/build/pkg/Heartecho-Distribution-$VERSION_VALUE.pkg
 $ROOT_DIR/build/pkg/Heartecho-$VERSION_VALUE.pkg
 $ROOT_DIR/build/pkg/Heartecho-Uninstaller-$VERSION_VALUE.pkg
 $ROOT_DIR/build/release-manifest.json"

@@ -23,6 +23,12 @@ Deeper implementation notes live in [docs/architecture.md](docs/architecture.md)
 - Xcode 16 or newer for release builds, signing, package tooling, and HAL driver work. Command Line Tools are enough for some local SwiftPM development tasks.
 - Python with Pillow for icon generation. The GitHub Actions workflow creates a local virtual environment automatically.
 
+## Download
+
+Most users should download the latest `Heartecho-<version>.dmg` from [GitHub Releases](https://github.com/cloud-oc/goal-loopback-https-rogueamoeba-com-loopback/releases/latest).
+
+Open the DMG, then run `Install Heartecho.pkg`. The package installs the app plus the required system audio components. The Release also includes raw `.pkg` files and `release-manifest.json` for debugging, automation, and artifact verification; the DMG is the recommended user-facing download.
+
 ## Quick Start
 
 Run the app from Swift Package Manager:
@@ -52,7 +58,7 @@ Build release artifacts locally:
 scripts/build-release-artifacts.sh --configuration release
 ```
 
-The release artifact command writes packages to `build/pkg/` and the release manifest to `build/release-manifest.json`.
+The release artifact command writes the user-facing DMG and packages to `build/pkg/`, and writes the release manifest to `build/release-manifest.json`.
 
 ## GitHub Release Automation
 
@@ -64,7 +70,7 @@ On a successful run, the workflow:
 
 1. Reads `VERSION`.
 2. Installs the Python icon-build dependency.
-3. Builds the app, HAL driver, installer package, uninstaller package, distribution package, and manifest.
+3. Builds the app, HAL driver, installer package, uninstaller package, distribution package, user-facing DMG, and manifest.
 4. Creates `v$(cat VERSION)` when missing, or updates the existing Release assets with `--clobber`.
 
 For local publishing after GitHub CLI authentication:

@@ -52,6 +52,7 @@ CURRENT_LOG="$ROOT_DIR/build/release-preflight-current.log"
 INSTALLER_PKG="$ROOT_DIR/build/pkg/Heartecho-$VERSION.pkg"
 UNINSTALLER_PKG="$ROOT_DIR/build/pkg/Heartecho-Uninstaller-$VERSION.pkg"
 PRODUCT_PKG="$ROOT_DIR/build/pkg/Heartecho-Distribution-$VERSION.pkg"
+DMG_PATH="$ROOT_DIR/build/pkg/Heartecho-$VERSION.dmg"
 
 mkdir -p "$(dirname "$REPORT_PATH")" "$CLANG_MODULE_CACHE_PATH"
 : >"$REPORT_PATH"
@@ -131,6 +132,7 @@ print_manifest() {
     artifact_line "installer package" "$INSTALLER_PKG"
     artifact_line "uninstaller package" "$UNINSTALLER_PKG"
     artifact_line "distribution product package" "$PRODUCT_PKG"
+    artifact_line "release DMG" "$DMG_PATH"
 }
 
 DIAGNOSTIC_ARGS=""
@@ -185,6 +187,9 @@ run_step "Verify uninstaller package" "$ROOT_DIR/scripts/verify-uninstaller-pkg.
 
 run_step "Build distribution product package" "$ROOT_DIR/scripts/build-distribution-product.sh" --execute --version "$VERSION" --installer-pkg "$INSTALLER_PKG" --uninstaller-pkg "$UNINSTALLER_PKG" --output "$PRODUCT_PKG"
 run_step "Verify distribution product package" "$ROOT_DIR/scripts/verify-distribution-product.sh" "$PRODUCT_PKG"
+
+run_step "Build release DMG" "$ROOT_DIR/scripts/build-release-dmg.sh" --version "$VERSION" --package "$PRODUCT_PKG" --output "$DMG_PATH"
+run_step "Verify release DMG" "$ROOT_DIR/scripts/verify-release-dmg.sh" "$DMG_PATH"
 
 # shellcheck disable=SC2086
 run_step "Check product signing" "$ROOT_DIR/scripts/check-product-signing.sh" $SIGNING_ARGS --version "$VERSION"

@@ -128,6 +128,14 @@ artifacts = [
         "signing": "installer",
     },
     {
+        "id": "releaseDiskImage",
+        "label": "Release disk image",
+        "path": root / f"build/pkg/Heartecho-{version}.dmg",
+        "kind": "diskImage",
+        "required": True,
+        "signing": "none",
+    },
+    {
         "id": "releasePreflightReport",
         "label": "Release preflight report",
         "path": root / "build/release-preflight-report.txt",

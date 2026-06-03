@@ -57,6 +57,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.value }}
         run: |
           scripts/publish-github-release.sh \
+            --asset "build/pkg/Heartecho-${VERSION}.dmg" \
             --asset "build/pkg/Heartecho-Distribution-${VERSION}.pkg" \
             --asset "build/pkg/Heartecho-${VERSION}.pkg" \
             --asset "build/pkg/Heartecho-Uninstaller-${VERSION}.pkg" \
