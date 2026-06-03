@@ -76,6 +76,7 @@ artifacts = [
         "kind": "bundle",
         "required": True,
         "signing": "application",
+        "stapleRequired": False,
         "plist": "Contents/Info.plist",
     },
     {
@@ -85,6 +86,7 @@ artifacts = [
         "kind": "bundle",
         "required": True,
         "signing": "application",
+        "stapleRequired": False,
         "plist": "Contents/Info.plist",
     },
     {
@@ -94,6 +96,7 @@ artifacts = [
         "kind": "file",
         "required": True,
         "signing": "application",
+        "stapleRequired": False,
     },
     {
         "id": "helperLaunchAgent",
@@ -102,6 +105,7 @@ artifacts = [
         "kind": "file",
         "required": True,
         "signing": "none",
+        "stapleRequired": False,
     },
     {
         "id": "installerPackage",
@@ -110,6 +114,7 @@ artifacts = [
         "kind": "package",
         "required": True,
         "signing": "installer",
+        "stapleRequired": False,
     },
     {
         "id": "uninstallerPackage",
@@ -118,6 +123,7 @@ artifacts = [
         "kind": "package",
         "required": True,
         "signing": "installer",
+        "stapleRequired": False,
     },
     {
         "id": "distributionProductPackage",
@@ -126,6 +132,7 @@ artifacts = [
         "kind": "package",
         "required": True,
         "signing": "installer",
+        "stapleRequired": True,
     },
     {
         "id": "releaseDiskImage",
@@ -133,7 +140,8 @@ artifacts = [
         "path": root / f"build/pkg/Heartecho-{version}.dmg",
         "kind": "diskImage",
         "required": True,
-        "signing": "none",
+        "signing": "notarized-disk-image",
+        "stapleRequired": True,
     },
     {
         "id": "releasePreflightReport",
@@ -142,6 +150,7 @@ artifacts = [
         "kind": "file",
         "required": False,
         "signing": "none",
+        "stapleRequired": False,
     },
 ]
 
@@ -273,6 +282,7 @@ for artifact in artifacts:
         "required": artifact["required"],
         "exists": exists,
         "signingRequirement": artifact["signing"],
+        "stapleRequired": artifact["stapleRequired"],
     }
     if not exists:
         entry["sha256"] = None
@@ -301,6 +311,8 @@ for artifact in artifacts:
         elif not entry["codesign"]["developerIDApplication"]:
             warnings.append(f"{artifact['label']} is not signed with Developer ID Application")
         entry["notarization"] = stapler_summary(path)
+        if artifact["stapleRequired"] and require_signed and not entry["notarization"]["stapled"]:
+            failures.append(f"{artifact['label']} does not have a stapled notarization ticket")
     elif artifact["signing"] == "installer":
         entry["pkgSignature"] = pkg_signature_summary(path)
         if require_signed and not entry["pkgSignature"]["developerIDInstaller"]:
@@ -308,6 +320,14 @@ for artifact in artifacts:
         elif not entry["pkgSignature"]["developerIDInstaller"]:
             warnings.append(f"{artifact['label']} is not signed with Developer ID Installer")
         entry["notarization"] = stapler_summary(path)
+        if artifact["stapleRequired"] and require_signed and not entry["notarization"]["stapled"]:
+            failures.append(f"{artifact['label']} does not have a stapled notarization ticket")
+    elif artifact["signing"] == "notarized-disk-image":
+        entry["notarization"] = stapler_summary(path)
+        if require_signed and not entry["notarization"]["stapled"]:
+            failures.append(f"{artifact['label']} does not have a stapled notarization ticket")
+        elif not entry["notarization"]["stapled"]:
+            warnings.append(f"{artifact['label']} does not have a stapled notarization ticket")
 
     manifest_artifacts.append(entry)
 
@@ -343,7 +363,7 @@ release_gates = [
         "passed": all(
             item.get("notarization", {}).get("stapled", False)
             for item in manifest_artifacts
-            if item["signingRequirement"] in ("application", "installer") and item["exists"]
+            if item["stapleRequired"] and item["exists"]
         ),
         "required": require_signed,
         "description": "Signed deliverables have stapled notarization tickets.",

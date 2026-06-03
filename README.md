@@ -29,6 +29,39 @@ Most users should download the latest `Heartecho-<version>.dmg` from [GitHub Rel
 
 Open the DMG, then run `Install Heartecho.pkg`. The package installs the app plus the required system audio components. The Release also includes raw `.pkg` files and `release-manifest.json` for debugging, automation, and artifact verification; the DMG is the recommended user-facing download.
 
+### Gatekeeper Notice
+
+The current community release is unsigned and not notarized because the project does not yet have an Apple Developer Program account. macOS may show "Apple cannot verify" or "damaged" warnings on first install.
+
+If the installer is blocked:
+
+1. Open the DMG and run `Install Heartecho.pkg`.
+2. Open `System Settings > Privacy & Security`.
+3. Click `Open Anyway` for `Install Heartecho.pkg`.
+4. If macOS still blocks it after installation, remove the quarantine attribute:
+
+```sh
+sudo xattr -r -d com.apple.quarantine /Applications/Heartecho.app
+sudo xattr -r -d com.apple.quarantine "/Library/Audio/Plug-Ins/HAL/Heartecho.driver"
+```
+
+Only use this for releases downloaded from this repository. This is a community workaround, not a replacement for Apple notarization.
+
+### Homebrew
+
+Install from this repository's third-party cask:
+
+```sh
+brew tap cloud-oc/goal-loopback-https-rogueamoeba-com-loopback https://github.com/cloud-oc/goal-loopback-https-rogueamoeba-com-loopback
+brew install --cask --no-quarantine heartecho
+```
+
+Uninstall:
+
+```sh
+brew uninstall --cask heartecho
+```
+
 ## Quick Start
 
 Run the app from Swift Package Manager:
@@ -64,14 +97,29 @@ The release artifact command writes the user-facing DMG and packages to `build/p
 
 `VERSION` is the source of truth for GitHub Release versioning. The workflow in [.github/workflows/release.yml](.github/workflows/release.yml) runs on pushes to `main` and on manual dispatch.
 
-The release job now runs on `macos-15` and selects Xcode 16.4 so the Swift 6 package tools version in [Package.swift](Package.swift) is supported. `scripts/check-swift-toolchain.sh` fails early with a readable message if a runner falls back to an older Swift toolchain.
+The release job runs on `macos-15` and selects Xcode 16.4 so the Swift 6 package tools version in [Package.swift](Package.swift) is supported. `scripts/check-swift-toolchain.sh` fails early with a readable message if a runner falls back to an older Swift toolchain.
+
+By default, the workflow publishes a `community-unsigned` release. Manual workflow dispatch can choose `notarized` after Developer ID certificates and Apple notarization credentials are available.
 
 On a successful run, the workflow:
 
 1. Reads `VERSION`.
 2. Installs the Python icon-build dependency.
-3. Builds the app, HAL driver, installer package, uninstaller package, distribution package, user-facing DMG, and manifest.
-4. Creates `v$(cat VERSION)` when missing, or updates the existing Release assets with `--clobber`.
+3. Builds and verifies the app, HAL driver, installer package, uninstaller package, distribution package, user-facing DMG, and manifest.
+4. In `notarized` mode, imports Developer ID certificates, signs the deliverables, submits them for Apple notarization, and staples the accepted tickets.
+5. Creates `v$(cat VERSION)` when missing, or updates the existing Release assets with `--clobber`.
+
+GitHub Secrets required for `notarized` mode:
+
+- `DEVELOPER_ID_APPLICATION_CERTIFICATE_BASE64`: base64-encoded `.p12` for the Developer ID Application certificate.
+- `DEVELOPER_ID_INSTALLER_CERTIFICATE_BASE64`: base64-encoded `.p12` for the Developer ID Installer certificate.
+- `DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD` and `DEVELOPER_ID_INSTALLER_CERTIFICATE_PASSWORD`, or a shared `DEVELOPER_ID_CERTIFICATE_PASSWORD`.
+- `DEVELOPER_ID_APPLICATION_IDENTITY`: for example `Developer ID Application: Your Name (TEAMID)`.
+- `DEVELOPER_ID_INSTALLER_IDENTITY`: for example `Developer ID Installer: Your Name (TEAMID)`.
+- `NOTARY_APPLE_ID`: Apple Developer account email.
+- `NOTARY_TEAM_ID`: Apple Developer Team ID.
+- `NOTARY_PASSWORD`: app-specific password for Apple notarization.
+- `SIGNING_KEYCHAIN_PASSWORD`: optional temporary CI keychain password. The import script generates one when this is omitted.
 
 For local publishing after GitHub CLI authentication:
 
@@ -79,6 +127,8 @@ For local publishing after GitHub CLI authentication:
 scripts/build-release-artifacts.sh --configuration release
 scripts/publish-github-release.sh
 ```
+
+Use `scripts/build-release-artifacts.sh --configuration release --require-notarized` only when Developer ID signing and Apple notarization credentials are configured.
 
 ## System Integration
 

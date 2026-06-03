@@ -108,18 +108,21 @@ EOF
 chmod 755 "$PKG_SCRIPTS_DIR/preinstall" "$PKG_SCRIPTS_DIR/postinstall"
 xattr -cr "$PKG_SCRIPTS_DIR" 2>/dev/null || true
 
-PKG_SIGN_ARGS=""
 if [ -n "$SIGN_PKG_IDENTITY" ]; then
-    PKG_SIGN_ARGS="--sign $SIGN_PKG_IDENTITY"
+    COPYFILE_DISABLE=1 pkgbuild \
+        --nopayload \
+        --scripts "$PKG_SCRIPTS_DIR" \
+        --identifier "$IDENTIFIER" \
+        --version "$VERSION" \
+        --sign "$SIGN_PKG_IDENTITY" \
+        "$PACKAGE_PATH"
+else
+    COPYFILE_DISABLE=1 pkgbuild \
+        --nopayload \
+        --scripts "$PKG_SCRIPTS_DIR" \
+        --identifier "$IDENTIFIER" \
+        --version "$VERSION" \
+        "$PACKAGE_PATH"
 fi
-
-# shellcheck disable=SC2086
-COPYFILE_DISABLE=1 pkgbuild \
-    --nopayload \
-    --scripts "$PKG_SCRIPTS_DIR" \
-    --identifier "$IDENTIFIER" \
-    --version "$VERSION" \
-    $PKG_SIGN_ARGS \
-    "$PACKAGE_PATH"
 
 printf 'Built %s\n' "$PACKAGE_PATH"

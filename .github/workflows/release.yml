@@ -5,6 +5,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      distribution_mode:
+        description: Release signing mode
+        required: true
+        default: community-unsigned
+        type: choice
+        options:
+          - community-unsigned
+          - notarized
 
 permissions:
   contents: write
@@ -15,6 +24,7 @@ jobs:
     runs-on: macos-15
     env:
       DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+      DISTRIBUTION_MODE: ${{ github.event.inputs.distribution_mode || 'community-unsigned' }}
     concurrency:
       group: release-${{ github.ref }}
       cancel-in-progress: false
@@ -44,12 +54,33 @@ jobs:
           .venv/bin/python -m pip install --upgrade pip
           .venv/bin/python -m pip install Pillow
 
+      - name: Import Developer ID certificates
+        if: ${{ env.DISTRIBUTION_MODE == 'notarized' }}
+        env:
+          DEVELOPER_ID_APPLICATION_CERTIFICATE_BASE64: ${{ secrets.DEVELOPER_ID_APPLICATION_CERTIFICATE_BASE64 }}
+          DEVELOPER_ID_INSTALLER_CERTIFICATE_BASE64: ${{ secrets.DEVELOPER_ID_INSTALLER_CERTIFICATE_BASE64 }}
+          DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD: ${{ secrets.DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD }}
+          DEVELOPER_ID_INSTALLER_CERTIFICATE_PASSWORD: ${{ secrets.DEVELOPER_ID_INSTALLER_CERTIFICATE_PASSWORD }}
+          DEVELOPER_ID_CERTIFICATE_PASSWORD: ${{ secrets.DEVELOPER_ID_CERTIFICATE_PASSWORD }}
+          SIGNING_KEYCHAIN_PASSWORD: ${{ secrets.SIGNING_KEYCHAIN_PASSWORD }}
+        run: scripts/import-macos-signing-certificates.sh
+
       - name: Build release artifacts
         env:
           VERSION: ${{ steps.version.outputs.value }}
           BUILD_NUMBER: ${{ github.run_number }}
           PYTHON: ${{ github.workspace }}/.venv/bin/python
-        run: scripts/build-release-artifacts.sh --configuration release
+          DEVELOPER_ID_APPLICATION_IDENTITY: ${{ secrets.DEVELOPER_ID_APPLICATION_IDENTITY }}
+          DEVELOPER_ID_INSTALLER_IDENTITY: ${{ secrets.DEVELOPER_ID_INSTALLER_IDENTITY }}
+          NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
+          NOTARY_TEAM_ID: ${{ secrets.NOTARY_TEAM_ID }}
+          NOTARY_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
+        run: |
+          if [ "$DISTRIBUTION_MODE" = "notarized" ]; then
+            scripts/build-release-artifacts.sh --configuration release --require-notarized
+          else
+            scripts/build-release-artifacts.sh --configuration release
+          fi
 
       - name: Create or update GitHub Release
         env:

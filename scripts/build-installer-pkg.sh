@@ -109,9 +109,9 @@ fi
 [ -x "$HELPER_PATH" ] || { printf 'Missing helper executable: %s\n' "$HELPER_PATH" >&2; exit 1; }
 
 if [ -n "$IDENTITY" ]; then
-    "$ROOT_DIR/scripts/sign-app-bundle.sh" --identity "$IDENTITY" $FORCE_SIGN_FLAG
-    "$ROOT_DIR/scripts/sign-hal-bundle.sh" --identity "$IDENTITY" $FORCE_SIGN_FLAG
-    "$ROOT_DIR/scripts/sign-helper.sh" --identity "$IDENTITY" $FORCE_SIGN_FLAG
+    "$ROOT_DIR/scripts/sign-app-bundle.sh" --identity "$IDENTITY" $FORCE_SIGN_FLAG --execute
+    "$ROOT_DIR/scripts/sign-hal-bundle.sh" --identity "$IDENTITY" $FORCE_SIGN_FLAG --execute
+    "$ROOT_DIR/scripts/sign-helper.sh" --helper "$HELPER_PATH" --identity "$IDENTITY" $FORCE_SIGN_FLAG --execute
 fi
 
 printf 'Heartecho package workflow\n'
@@ -219,21 +219,27 @@ EOF
 chmod 755 "$PKG_SCRIPTS_DIR/preinstall" "$PKG_SCRIPTS_DIR/postinstall" "$PKG_SCRIPTS_DIR/postuninstall"
 xattr -cr "$STAGING_DIR" "$PKG_SCRIPTS_DIR" 2>/dev/null || true
 
-PKG_SIGN_ARGS=""
 if [ -n "$SIGN_PKG_IDENTITY" ]; then
-    PKG_SIGN_ARGS="--sign $SIGN_PKG_IDENTITY"
+    COPYFILE_DISABLE=1 pkgbuild \
+        --root "$STAGING_DIR" \
+        --scripts "$PKG_SCRIPTS_DIR" \
+        --filter '/\._' \
+        --filter '\.DS_Store$' \
+        --identifier "$IDENTIFIER" \
+        --version "$VERSION" \
+        --install-location "/" \
+        --sign "$SIGN_PKG_IDENTITY" \
+        "$PACKAGE_PATH"
+else
+    COPYFILE_DISABLE=1 pkgbuild \
+        --root "$STAGING_DIR" \
+        --scripts "$PKG_SCRIPTS_DIR" \
+        --filter '/\._' \
+        --filter '\.DS_Store$' \
+        --identifier "$IDENTIFIER" \
+        --version "$VERSION" \
+        --install-location "/" \
+        "$PACKAGE_PATH"
 fi
-
-# shellcheck disable=SC2086
-COPYFILE_DISABLE=1 pkgbuild \
-    --root "$STAGING_DIR" \
-    --scripts "$PKG_SCRIPTS_DIR" \
-    --filter '/\._' \
-    --filter '\.DS_Store$' \
-    --identifier "$IDENTIFIER" \
-    --version "$VERSION" \
-    --install-location "/" \
-    $PKG_SIGN_ARGS \
-    "$PACKAGE_PATH"
 
 printf 'Built %s\n' "$PACKAGE_PATH"

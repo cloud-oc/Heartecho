@@ -29,6 +29,39 @@ Heartecho 是一个原生 macOS 音频路由工作台，用来创建虚拟音频
 
 打开 DMG 后运行 `Install Heartecho.pkg`。这个安装包会安装应用以及必需的系统音频组件。Release 中也会保留原始 `.pkg` 文件和 `release-manifest.json`，用于调试、自动化和校验产物；面向用户推荐下载 DMG。
 
+### Gatekeeper 提示
+
+当前社区版未签名、未经过 Apple 公证，因为项目暂时没有 Apple Developer Program 账号。首次安装时 macOS 可能提示“Apple 无法验证”“无法验证开发者”或“已损坏”。
+
+如果安装被拦截：
+
+1. 打开 DMG，运行 `Install Heartecho.pkg`。
+2. 打开 `系统设置 > 隐私与安全性`。
+3. 对 `Install Heartecho.pkg` 点击 `仍要打开`。
+4. 如果安装后应用或驱动仍被拦截，可以移除隔离标记后重试：
+
+```sh
+sudo xattr -r -d com.apple.quarantine /Applications/Heartecho.app
+sudo xattr -r -d com.apple.quarantine "/Library/Audio/Plug-Ins/HAL/Heartecho.driver"
+```
+
+请只对本仓库 Release 下载的产物使用这些命令。这是社区版的临时处理方式，不等同于 Apple 公证。
+
+### Homebrew
+
+通过本仓库的第三方 cask 安装：
+
+```sh
+brew tap cloud-oc/goal-loopback-https-rogueamoeba-com-loopback https://github.com/cloud-oc/goal-loopback-https-rogueamoeba-com-loopback
+brew install --cask --no-quarantine heartecho
+```
+
+卸载：
+
+```sh
+brew uninstall --cask heartecho
+```
+
 ## 快速开始
 
 运行应用：
@@ -64,14 +97,29 @@ release artifact 命令会把面向用户的 DMG 和安装包写入 `build/pkg/`
 
 `VERSION` 是 GitHub Release 版本号的单一来源。[release.yml](../.github/workflows/release.yml) 会在推送到 `main` 和手动触发时运行。
 
-发布 job 现在运行在 `macos-15`，并显式选择 Xcode 16.4，因此能够支持 [Package.swift](../Package.swift) 中的 Swift 6 tools version。`scripts/check-swift-toolchain.sh` 会在 runner 使用旧 Swift 工具链时提前给出清晰错误。
+发布 job 运行在 `macos-15`，并显式选择 Xcode 16.4，因此能够支持 [Package.swift](../Package.swift) 中的 Swift 6 tools version。`scripts/check-swift-toolchain.sh` 会在 runner 使用旧 Swift 工具链时提前给出清晰错误。
+
+默认 workflow 会发布 `community-unsigned` 社区未公证版本。等 Developer ID 证书和 Apple 公证凭据准备好后，手动触发 workflow 时可以选择 `notarized` 模式。
 
 成功运行后，workflow 会：
 
 1. 读取 `VERSION`。
 2. 安装 Python 图标构建依赖。
-3. 构建 app、HAL 驱动、安装包、卸载包、distribution package、面向用户的 DMG 和 manifest。
-4. 如果 `v$(cat VERSION)` 不存在就创建 Release；如果已存在，就用 `--clobber` 更新 assets。
+3. 构建并验证 app、HAL 驱动、安装包、卸载包、distribution package、面向用户的 DMG 和 manifest。
+4. 在 `notarized` 模式下，从 GitHub Secrets 导入 Developer ID 证书，签名产物，提交 Apple 公证并 staple 已通过的 ticket。
+5. 如果 `v$(cat VERSION)` 不存在就创建 Release；如果已存在，就用 `--clobber` 更新 assets。
+
+`notarized` 模式必需的 GitHub Secrets：
+
+- `DEVELOPER_ID_APPLICATION_CERTIFICATE_BASE64`：Developer ID Application `.p12` 证书的 base64 内容。
+- `DEVELOPER_ID_INSTALLER_CERTIFICATE_BASE64`：Developer ID Installer `.p12` 证书的 base64 内容。
+- `DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD` 和 `DEVELOPER_ID_INSTALLER_CERTIFICATE_PASSWORD`，或共用的 `DEVELOPER_ID_CERTIFICATE_PASSWORD`。
+- `DEVELOPER_ID_APPLICATION_IDENTITY`：例如 `Developer ID Application: Your Name (TEAMID)`。
+- `DEVELOPER_ID_INSTALLER_IDENTITY`：例如 `Developer ID Installer: Your Name (TEAMID)`。
+- `NOTARY_APPLE_ID`：Apple Developer 账号邮箱。
+- `NOTARY_TEAM_ID`：Apple Developer Team ID。
+- `NOTARY_PASSWORD`：Apple 公证使用的 app-specific password。
+- `SIGNING_KEYCHAIN_PASSWORD`：可选的 CI 临时 keychain 密码。未配置时导入脚本会自动生成。
 
 本地发布需要先完成 GitHub CLI 登录：
 
@@ -79,6 +127,8 @@ release artifact 命令会把面向用户的 DMG 和安装包写入 `build/pkg/`
 scripts/build-release-artifacts.sh --configuration release
 scripts/publish-github-release.sh
 ```
+
+只有在 Developer ID 签名和 Apple 公证凭据都配置好后，才使用 `scripts/build-release-artifacts.sh --configuration release --require-notarized`。
 
 ## 系统集成说明
 
