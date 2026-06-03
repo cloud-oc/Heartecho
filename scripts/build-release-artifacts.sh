@@ -65,6 +65,8 @@ printf '%s\n' "- configuration: $CONFIGURATION"
 printf '%s\n' "- build number: $BUILD_NUMBER"
 printf '%s\n' "- output: $OUTPUT_DIR"
 
+"$ROOT_DIR/scripts/check-swift-toolchain.sh"
+
 env CLANG_MODULE_CACHE_PATH="$CLANG_MODULE_CACHE_PATH" swift build -c "$CONFIGURATION" --disable-sandbox
 
 "$ROOT_DIR/scripts/build-icons.sh"

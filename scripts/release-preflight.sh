@@ -147,6 +147,8 @@ fi
 
 print_header
 
+run_step "Swift toolchain check" "$ROOT_DIR/scripts/check-swift-toolchain.sh"
+
 run_step "Swift build" \
     env CLANG_MODULE_CACHE_PATH="$CLANG_MODULE_CACHE_PATH" swift build --disable-sandbox
 
