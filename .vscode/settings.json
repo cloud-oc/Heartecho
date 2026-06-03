@@ -1,0 +1,6 @@
+{
+  "sourcekit-lsp.serverPath": "/usr/bin/sourcekit-lsp",
+  "files.exclude": {
+    ".build": true
+  }
+}

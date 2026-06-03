@@ -1,0 +1,313 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Swift: Build",
+      "type": "shell",
+      "command": "swift build",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Swift: Run App",
+      "type": "shell",
+      "command": "swift run Heartecho",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Assets: Build Icons",
+      "type": "shell",
+      "command": "scripts/build-icons.sh",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "App: Build Bundle",
+      "type": "shell",
+      "command": "scripts/build-app-bundle.sh debug",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "App: Verify Bundle",
+      "type": "shell",
+      "command": "scripts/verify-app-bundle.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "App: Sign Dry Run",
+      "type": "shell",
+      "command": "scripts/sign-app-bundle.sh --identity \"Developer ID Application: Example\"",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Swift: Test",
+      "type": "shell",
+      "command": "swift run HeartechoDiagnostics",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Swift: Test Sandbox Safe",
+      "type": "shell",
+      "command": "CLANG_MODULE_CACHE_PATH=.build/clang-module-cache swift run --disable-sandbox HeartechoDiagnostics --skip-shared-memory",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Swift: HAL Transport Stress",
+      "type": "shell",
+      "command": "CLANG_MODULE_CACHE_PATH=.build/clang-module-cache swift run --disable-sandbox HeartechoDiagnostics --stress-hal-transport",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Swift: Run Helper",
+      "type": "shell",
+      "command": "swift run HeartechoHelper --init-starter-graph --publish-audio",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Helper: Build LaunchAgent Plist",
+      "type": "shell",
+      "command": "scripts/build-helper-launch-agent.sh",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Helper: Sign Dry Run",
+      "type": "shell",
+      "command": "scripts/sign-helper.sh --identity \"Developer ID Application: Example\"",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Helper: Install LaunchAgent Dry Run",
+      "type": "shell",
+      "command": "scripts/install-helper-launch-agent.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Helper: Uninstall LaunchAgent Dry Run",
+      "type": "shell",
+      "command": "scripts/uninstall-helper-launch-agent.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Helper: Recovery Plan",
+      "type": "shell",
+      "command": "scripts/recover-helper-service.sh --kickstart",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "HAL: Build Bundle",
+      "type": "shell",
+      "command": "scripts/build-hal-bundle.sh debug",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "HAL: Verify Bundle",
+      "type": "shell",
+      "command": "scripts/verify-hal-bundle.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "HAL: Check Signing",
+      "type": "shell",
+      "command": "scripts/check-hal-signing.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "HAL: Sign Dry Run",
+      "type": "shell",
+      "command": "scripts/sign-hal-bundle.sh --identity \"Developer ID Application: Example\"",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "HAL: Notarize Dry Run",
+      "type": "shell",
+      "command": "scripts/notarize-hal-bundle.sh --keychain-profile ExampleProfile",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "HAL: Install Dry Run",
+      "type": "shell",
+      "command": "scripts/install-hal-bundle.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "HAL: Uninstall Dry Run",
+      "type": "shell",
+      "command": "scripts/uninstall-hal-bundle.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "HAL: Reload Core Audio Dry Run",
+      "type": "shell",
+      "command": "scripts/reload-core-audio.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "HAL: Wait For Device",
+      "type": "shell",
+      "command": "swift run HeartechoDiagnostics --wait-hal-device 30",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Install Workflow Dry Run",
+      "type": "shell",
+      "command": "scripts/install-heartecho.sh --wait 30",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Validate Installation",
+      "type": "shell",
+      "command": "scripts/validate-installation.sh --wait 30",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Validate Installation Strict",
+      "type": "shell",
+      "command": "scripts/validate-installation.sh --strict --wait 30",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Validate Installed Audio",
+      "type": "shell",
+      "command": "scripts/validate-installed-audio.sh --iterations 3 --wait 30",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Validate Installed Audio Strict",
+      "type": "shell",
+      "command": "scripts/validate-installed-audio.sh --strict --iterations 3 --wait 30",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Build Installer Pkg Dry Run",
+      "type": "shell",
+      "command": "scripts/build-installer-pkg.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Build Installer Pkg",
+      "type": "shell",
+      "command": "scripts/build-installer-pkg.sh --execute",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Verify Installer Pkg",
+      "type": "shell",
+      "command": "scripts/verify-installer-pkg.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Build Uninstaller Pkg Dry Run",
+      "type": "shell",
+      "command": "scripts/build-uninstaller-pkg.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Build Uninstaller Pkg",
+      "type": "shell",
+      "command": "scripts/build-uninstaller-pkg.sh --execute",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Verify Uninstaller Pkg",
+      "type": "shell",
+      "command": "scripts/verify-uninstaller-pkg.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Build Distribution Pkg Dry Run",
+      "type": "shell",
+      "command": "scripts/build-distribution-product.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Build Distribution Pkg",
+      "type": "shell",
+      "command": "scripts/build-distribution-product.sh --execute",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Verify Distribution Pkg",
+      "type": "shell",
+      "command": "scripts/verify-distribution-product.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Check Signing",
+      "type": "shell",
+      "command": "scripts/check-product-signing.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Write Release Manifest",
+      "type": "shell",
+      "command": "scripts/write-release-manifest.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Release Preflight",
+      "type": "shell",
+      "command": "scripts/release-preflight.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Release Preflight Require Signed",
+      "type": "shell",
+      "command": "scripts/release-preflight.sh --require-signed",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Notarize Distribution Dry Run",
+      "type": "shell",
+      "command": "scripts/notarize-product-pkg.sh --keychain-profile ExampleProfile",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Product: Uninstall Workflow Dry Run",
+      "type": "shell",
+      "command": "scripts/uninstall-heartecho.sh --unload-helper --reload-core-audio",
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}

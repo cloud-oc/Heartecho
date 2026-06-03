@@ -1,0 +1,9 @@
+.DS_Store
+.build/
+build/
+work/
+outputs/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.swp
