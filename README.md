@@ -150,6 +150,32 @@ scripts/write-release-manifest.sh --require-signed
 
 The `--require-signed` form intentionally fails until Developer ID signatures and stapled notarization tickets are present.
 
+## GitHub Release Automation
+
+`VERSION` is the single source for GitHub Release versioning. The workflow in `.github/workflows/release.yml` runs on every push to `main` and on manual dispatch:
+
+- builds the release app, HAL driver, installer package, uninstaller package, distribution package, and release manifest
+- reads the release tag as `v$(cat VERSION)`
+- if that GitHub Release already exists, uploads the newly built packages with `--clobber`
+- if that GitHub Release does not exist, creates it and uploads the packages
+
+That means changing code while keeping the same `VERSION` updates the existing Release assets, and changing `VERSION` creates a new Release.
+
+For local publishing after GitHub CLI authentication:
+
+```sh
+scripts/build-release-artifacts.sh --configuration release
+scripts/publish-github-release.sh
+```
+
+To create the GitHub repository from this checkout after logging in with `gh auth login`:
+
+```sh
+gh repo create Heartecho --private --source=. --remote=origin --push
+```
+
+Use `--public` instead of `--private` if you want the repository public.
+
 To audit a real installation without modifying the system:
 
 ```sh
